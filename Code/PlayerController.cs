@@ -60,3 +60,20 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Jump() {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    System.Collections.IEnumerator Dash() {
+        isDashing = true;
+        dashTimer = dashCooldown;
+        Vector2 dashDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        if (dashDirection == Vector2.zero) dashDirection = Vector2.right * transform.localScale.x;
+        rb.velocity = dashDirection * dashForce;
+        yield return new WaitForSeconds(iFrameDuration);
+        isDashing = false;
+    }
+
+    bool IsGrounded() {
+        return Physics2D.Raycast(transform.position, Vector2.down, 0.1f);
+    }
+}
